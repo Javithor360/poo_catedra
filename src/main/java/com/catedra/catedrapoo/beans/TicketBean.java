@@ -38,7 +38,7 @@ public class TicketBean {
         this.created_at = created_at;
     }
 
-    public TicketBean(int id, String code, String name, String description, String state, int state_id, String observations, String requester_area_name, String boss_name, String dev_boss_name, String tester_name, String programmer_name, String due_date, String created_at) {
+    public TicketBean(int id, String code, String name, String description, String state, int state_id, String observations, int programmer_id, String requester_area_name, String boss_name, String dev_boss_name, String tester_name, String programmer_name, String due_date, String created_at) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -46,6 +46,7 @@ public class TicketBean {
         this.state = state;
         this.state_id = state_id;
         this.observations = observations;
+        this.programmer_id = programmer_id;
         this.requester_area_name = requester_area_name;
         this.boss_name = boss_name;
         this.dev_boss_name = dev_boss_name;
