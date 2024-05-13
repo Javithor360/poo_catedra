@@ -122,7 +122,7 @@
             // Aquí se muestra el mensaje recibido por la URL en caso de que exista uno
             if(request.getParameter("info") != null) {
         %>
-        <div class="alert mt-5 <%= request.getParameter("info").startsWith("error") ? "alert-danger" : "alert-success" %>"
+        <div class="alert mt-2 <%= request.getParameter("info").startsWith("error") ? "alert-danger" : "alert-success" %>"
              role="alert">
             <%= request.getAttribute("info") %>
         </div>
