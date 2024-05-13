@@ -64,7 +64,7 @@
                     if (all_tickets == null || all_tickets.isEmpty()) {
                 %>
                 <tr>
-                    <td colspan="5">No hay registro casos aperturados</td>
+                    <td colspan="6">No hay registro casos aperturados</td>
                 </tr>
                 <%
                 } else {
