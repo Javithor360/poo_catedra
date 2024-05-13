@@ -10,13 +10,13 @@
     if(user != null) {
 
         if (user.getRole_id() == 1) {
-            response.sendRedirect("dev_boss/main.jsp");
+            response.sendRedirect("jefe_desarrollo/main.jsp");
         } else if(user.getRole_id() == 2) {
-            response.sendRedirect("developer/main.jsp");
+            response.sendRedirect("programador/main.jsp");
         } else if(user.getRole_id() == 3) {
-            response.sendRedirect("requester/main.jsp");
+            response.sendRedirect("jefe_area/main.jsp");
         } else if(user.getRole_id() == 4) {
-            response.sendRedirect("tester/main.jsp");
+            response.sendRedirect("probador/main.jsp");
         } else {
             response.sendRedirect("login.jsp");
         }
