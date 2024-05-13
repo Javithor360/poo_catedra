@@ -75,6 +75,7 @@ public class JefeDesarrollo {
                     "t.state_id AS state_id, " +
                     "t.created_at AS ticket_created_at, " +
                     "t.due_date AS ticket_due_date, " +
+                    "t.programmer_id AS programmer_id" +
                     "s.name AS state, " +
                     "u.name AS boss_name, " +
                     "u2.name AS dev_boss_name," +
@@ -108,6 +109,7 @@ public class JefeDesarrollo {
                         rs.getString("state"),
                         rs.getInt("state_id"),
                         rs.getString("observations"),
+                        rs.getInt("programmer_id"),
                         rs.getString("area_name"),
                         rs.getString("boss_name"),
                         rs.getString("dev_boss_name"),
