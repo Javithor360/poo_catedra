@@ -7,6 +7,7 @@ public class Conexion {
     private Connection connection = null;
     private Statement s = null;
     private ResultSet rs = null;
+    private boolean autoCommitEnabled = true;
 
     // Constructor que inicializa cada instancia de la Conexión
     public Conexion() throws SQLException {
@@ -54,6 +55,26 @@ public class Conexion {
             throw e; // Relanza la excepción para manejarla fuera de la clase Conexion
         }
         return pstmt;
+    }
+
+    // Método para activar o desactivar el modo de confirmación automática
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        connection.setAutoCommit(autoCommit);
+        autoCommitEnabled = autoCommit;
+    }
+
+    // Método para realizar un rollback en la transacción actual
+    public void rollback() throws SQLException {
+        if (!autoCommitEnabled) {
+            connection.rollback();
+        }
+    }
+
+    // Método para confirmar la transacción actual
+    public void commit() throws SQLException {
+        if (!autoCommitEnabled) {
+            connection.commit();
+        }
     }
 
     // Método que cierra la conexión
