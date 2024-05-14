@@ -71,7 +71,7 @@
                 <%
                     // Obteniendo por medio del parámetro retornado por el servlet los tickets
                     HashMap<String, TicketBean> new_tickets = (HashMap<String, TicketBean>) request.getAttribute("new_tickets");
-                    if(new_tickets == null || new_tickets.isEmpty()) {
+                    if (new_tickets == null || new_tickets.isEmpty()) {
                 %>
                 <tr>
                     <td colspan="5" class="text-center">Por el momento no hay casos solicitados...</td>

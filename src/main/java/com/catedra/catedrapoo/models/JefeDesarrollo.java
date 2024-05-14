@@ -25,7 +25,8 @@ public class JefeDesarrollo {
                 "t.name AS ticket_name, " +
                 "t.description AS ticket_description, " +
                 "t.created_at AS ticket_created_at, " +
-                "s.name AS state, u.name AS boss_name, " +
+                "s.name AS state, " +
+                "u.name AS boss_name, " +
                 "u2.name AS dev_boss_name, " +
                 "a.name AS area_name " +
                 "FROM tickets t " +
@@ -75,7 +76,7 @@ public class JefeDesarrollo {
                     "t.state_id AS state_id, " +
                     "t.created_at AS ticket_created_at, " +
                     "t.due_date AS ticket_due_date, " +
-                    "t.programmer_id AS programmer_id" +
+                    "t.programmer_id AS programmer_id, " +
                     "s.name AS state, " +
                     "u.name AS boss_name, " +
                     "u2.name AS dev_boss_name," +
