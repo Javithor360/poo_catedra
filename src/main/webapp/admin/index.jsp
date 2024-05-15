@@ -14,11 +14,6 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .card {
-            height: 250px; /* Establecer el tamaño fijo */
-        }
-    </style>
     <script src="../assets/js/bootstrap.min.js"></script>
     <title>Admin - Main</title>
 </head>
@@ -37,7 +32,7 @@
                 <div class="card-body align-content-center">
                     <h5 class="card-title">Gestión de usuarios</h5>
                     <p class="card-text">Crea, elimina o modifica los usuarios del sistema</p>
-                    <a href="#" class="btn btn-primary">Accede aquí</a>
+                    <a href="/admin/users.jsp" class="btn btn-primary">Accede aquí</a>
                 </div>
             </div>
         </div>

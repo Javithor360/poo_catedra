@@ -10,6 +10,8 @@ public class UserSessionBean {
     private String gender;
     private Integer role_id;
     private Date created_at;
+    private String role_name;
+    private String password;
 
     public UserSessionBean(int id, String name, String email, String gender, Date birthday, Integer role_id, Date created_at) {
         this.id = id;
@@ -75,5 +77,21 @@ public class UserSessionBean {
 
     public void setCreated_at(Date created_at) {
         this.created_at = created_at;
+    }
+
+    public String getRole_name() {
+        return role_name;
+    }
+
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
