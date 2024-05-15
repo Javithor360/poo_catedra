@@ -109,4 +109,30 @@ public class Admin {
         }
         return updated;
     }
+
+    public boolean deleteUser(int id) throws SQLException {
+        Conexion conexion = null;
+        boolean deleted = false;
+
+        try {
+            conexion = new Conexion();
+            String sql = "DELETE FROM users WHERE id = ?";
+            PreparedStatement sqlStatement = conexion.setQuery(sql);
+            sqlStatement.setInt(1, id);
+
+            int rowsAffected = sqlStatement.executeUpdate();
+
+            // Verificar si se eliminaron filas
+            if (rowsAffected > 0) {
+                deleted = true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conexion != null) {
+                conexion.closeConnection();
+            }
+        }
+        return deleted;
+    }
 }

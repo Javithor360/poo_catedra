@@ -27,6 +27,10 @@
             request.setAttribute("info", "Usuario actualizado correctamente");
         } else if(request.getParameter("info").equals("error_update_user")) {
             request.setAttribute("info", "Ocurrió un error al intentar actualizar el usuario");
+        } else if (request.getParameter("info").equals("success_delete_user")) {
+            request.setAttribute("info", "Usuario eliminado correctamente");
+        } else if (request.getParameter("info").equals("error_delete_user")) {
+            request.setAttribute("info", "Ocurrió un error al intentar eliminar el usuario");
         }
     }
 %>
@@ -66,6 +70,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
+                    <th>Cargo</th>
                     <th>Email</th>
                     <th>Género</th>
                     <th>Fecha creación</th>
@@ -88,12 +93,13 @@
                     <tr>
                         <td><%= employee.getId() %></td>
                         <td><%= employee.getName() %></td>
+                        <td><%= employee.getRole_name() %></td>
                         <td><%= employee.getEmail() %></td>
                         <td><%= employee.getGender().equals("M") ? "Masculino" : "Femenino" %></td>
                         <td><%= employee.getCreated_at() %></td>
                         <td>
                             <a href="/admin/form.jsp?id=<%= employee.getId() %>" class="btn btn-primary">Editar</a>
-                            <a href="adm?action=delete_user&id=<%= employee.getId() %>" class="btn btn-danger">Eliminar</a>
+                            <a href="/adm?action=delete_user&id=<%= employee.getId() %>" class="btn btn-danger">Eliminar</a>
                         </td>
                     </tr>
                 <%

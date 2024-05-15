@@ -52,6 +52,9 @@ public class AdminController extends HttpServlet {
                 case "modify_user":
                     modifyUser(request, response);
                     break;
+                case "delete_user":
+                    deleteUser(request, response);
+                    break;
             }
         }
     }
@@ -102,6 +105,21 @@ public class AdminController extends HttpServlet {
                 response.sendRedirect("/admin/users.jsp?info=success_update_user");
             } else {
                 response.sendRedirect("/admin/users.jsp?info=error_update_user");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void deleteUser(final HttpServletRequest request, final HttpServletResponse response) {
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+
+            if(admin.deleteUser(id)) {
+                response.sendRedirect("/admin/users.jsp?info=success_delete_user");
+            } else {
+                response.sendRedirect("/admin/users.jsp?info=error_delete_user");
             }
         } catch (Exception e) {
             e.printStackTrace();

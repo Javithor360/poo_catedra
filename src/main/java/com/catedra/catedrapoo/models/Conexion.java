@@ -15,7 +15,7 @@ public class Conexion {
             // Accediendo al driver de MySQL (JDBC)
             Class.forName("com.mysql.cj.jdbc.Driver");
             // Obteniendo la conexión con la base de datos
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistema_tickets",
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/catedrapoo",
                     "root",
                     ""
             );
