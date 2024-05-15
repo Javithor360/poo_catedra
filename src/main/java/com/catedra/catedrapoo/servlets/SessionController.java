@@ -43,7 +43,7 @@ public class SessionController extends HttpServlet {
                 UserSessionBean admin = new UserSessionBean(0, "Administrador", "admin", null, null, 0, null);
                 currentSession.setAttribute("user", admin);
 
-                response.sendRedirect("admin/main.jsp");
+                response.sendRedirect("/admin/index.jsp");
                 return;
             }
 
