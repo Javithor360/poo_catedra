@@ -30,6 +30,10 @@
             request.setAttribute("info", "Usuario eliminado correctamente");
         } else if (request.getParameter("info").equals("error_delete_user")) {
             request.setAttribute("info", "Ocurrió un error al intentar eliminar el usuario");
+        } else if (request.getParameter("info").equals("success_create_user")) {
+            request.setAttribute("info", "Usuario creado correctamente");
+        } else if (request.getParameter("info").equals("error_create_user")) {
+            request.setAttribute("info", "Ocurrió un error al intentar crear el usuario");
         }
     }
 %>
@@ -51,7 +55,10 @@
     </div>
     <hr />
     <div>
-        <h3>Lista de usuarios en el sistema</h3>
+        <div class="d-flex justify-content-between my-3">
+            <h3>Lista de usuarios en el sistema</h3>
+            <a href="/admin/user_form.jsp" class="btn btn-success">Agregar usuario</a>
+        </div>
         <div class="table-container">
             <%
                 // Mostrar mensajes de información recibidos de la petición

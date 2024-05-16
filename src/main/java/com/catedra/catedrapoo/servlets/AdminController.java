@@ -48,6 +48,9 @@ public class AdminController extends HttpServlet {
                 case "display_user":
                     displayUserById(request, response, Integer.parseInt(request.getParameter("id")));
                     break;
+                case "create_user":
+                    createUser(request, response);
+                    break;
                 case "modify_user":
                     modifyUser(request, response);
                     break;
@@ -85,6 +88,33 @@ public class AdminController extends HttpServlet {
             request.setAttribute("selected_user", selected_user);
             request.getRequestDispatcher("/admin/user_form.jsp?id=" + id).forward(request, response);
         } catch (IOException | SQLException | ServletException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void createUser(final HttpServletRequest request, final HttpServletResponse response) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date birthdate = dateFormat.parse(request.getParameter("fecha_nac"));
+
+            UserBean newUser = new UserBean(
+                    0,
+                    request.getParameter("nombre"),
+                    request.getParameter("email"),
+                    request.getParameter("genero"),
+                    birthdate,
+                    Integer.parseInt(request.getParameter("rol")),
+                    null
+            );
+            newUser.setPassword(request.getParameter("password"));
+
+            if(admin.createUser(newUser)) {
+                response.sendRedirect("/admin/users.jsp?info=success_create_user");
+            } else {
+                response.sendRedirect("/admin/users.jsp?info=error_create_user");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }
@@ -143,8 +173,6 @@ public class AdminController extends HttpServlet {
 
     private void createArea(final HttpServletRequest request, final HttpServletResponse response) {
         try {
-            System.out.println(request.getParameter("prefix") + " " + request.getParameter("name") + " " + request.getParameter("boss") + " " + request.getParameter("dev_boss") + " " + request.getParameter("empNum") + " " + request.getParameter("devNum"));
-
             if(request.getParameter("prefix") == null || request.getParameter("name") == null || request.getParameter("boss") == null || request.getParameter("dev_boss") == null || request.getParameter("empNum") == null || request.getParameter("devNum") == null) {
                 response.sendRedirect("/admin/area_form.jsp?info=error_empty_fields");
                 return;
@@ -161,8 +189,6 @@ public class AdminController extends HttpServlet {
                 response.sendRedirect("/admin/area_form.jsp?info=error_prefix_length");
                 return;
             }
-
-            System.out.println(prefix + " " + name + " " + boss_id + " " + dev_id + " " + empNum + " " + devNum);
 
             if(admin.createArea(prefix, name, boss_id, dev_id, empNum, devNum)) {
                 response.sendRedirect("/admin/areas.jsp?info=success_create_area");

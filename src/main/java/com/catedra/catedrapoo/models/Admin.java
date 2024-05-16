@@ -78,6 +78,37 @@ public class Admin {
         return user;
     }
 
+    public boolean createUser(UserBean user) throws SQLException {
+        Conexion conexion = null;
+        boolean created = false;
+
+        try {
+            conexion = new Conexion();
+            String sql = "INSERT INTO users (name, email, password, gender, birthday, role_id) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement sqlStatement = conexion.setQuery(sql);
+            sqlStatement.setString(1, user.getName());
+            sqlStatement.setString(2, user.getEmail());
+            sqlStatement.setString(3, user.getPassword());
+            sqlStatement.setString(4, user.getGender());
+            sqlStatement.setDate(5, new java.sql.Date(user.getBirthday().getTime()));
+            sqlStatement.setInt(6, user.getRole_id());
+
+            int rowsAffected = sqlStatement.executeUpdate();
+
+            // Verificar si se insertaron filas
+            if (rowsAffected > 0) {
+                created = true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conexion != null) {
+                conexion.closeConnection();
+            }
+        }
+        return created;
+    }
+
     public boolean updateUser(UserBean user) throws SQLException {
         Conexion conexion = null;
         boolean updated = false;

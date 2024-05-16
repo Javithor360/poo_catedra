@@ -39,6 +39,7 @@
             <h3><%= request.getParameter("id") != null ? "Modificar usuario" : "Agregar usuario" %></h3>
             <hr />
             <form class="w-50" method="post" action="/adm">
+                <% if (selected_user != null) { %>
                 <div class="form-group col-md-12 mb-3 d-flex justify-content-between">
                     <div>
                         <label for="id">ID</label>
@@ -48,9 +49,10 @@
                     <div>
                         <label for="fecha_crea">Fecha creación</label>
                         <input type="date" class="form-control" id="fecha_crea" value="<%= selected_user != null ? selected_user.getCreated_at() : "" %>" required readonly>
-                        <input type="date" class="form-control" name="fecha_crea" value="<%= selected_user != null ? selected_user.getCreated_at() : "" %>" readonly>
+                        <input type="hidden" class="form-control" name="fecha_crea" value="<%= selected_user != null ? selected_user.getCreated_at() : "" %>" readonly>
                     </div>
                 </div>
+                <% } %>
                 <div class="form-group col-md-12 mb-3 d-flex justify-content-between">
                     <div>
                         <label for="nombre">Nombre</label>
