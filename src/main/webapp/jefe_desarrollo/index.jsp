@@ -101,10 +101,11 @@
                                         id: <%= ticket.getId() %>,
                                         code: '<%= ticket.getCode() %>',
                                         title: '<%= ticket.getName() %>',
-                                        description: '<%= ticket.getDescription() %>',
+                                        description: '<%= ticket.getDescription().replace("\r\n", "\\n").replace("\n", "\\n") %>',
                                         observations: null,
                                         requester_name: '<%= ticket.getBoss_name() %>',
-                                        requester_area_name: '<%= ticket.getRequester_area_name() %>'
+                                        requester_area_name: '<%= ticket.getRequester_area_name() %>',
+                                        pdf: '<%= ticket.getPdf() %>'
                                         })"
                         >
                             Ver más
@@ -184,6 +185,15 @@
             "<input type='text' id='requester_name' class='form-control' value='" + ticket.requester_name + " (Depto de. " + ticket.requester_area_name + ")' readonly>" +
             "</div>" +
             "<div class='form-group'>" +
+            "<label for='pdf_file' class='mr-3'><strong>Archivos de detalles:</strong></label>" +
+            (
+                ticket.pdf !== "null" && ticket.pdf !== ''  ?
+                    "<a type='text' id='pdf_file' class='btn btn-primary'  target='_blank' href='/flc?fileName="+ticket.pdf+"'>Descargar archivo de detalles</a>"
+                    :
+                    "<button type='button' class='btn btn-primary disabled' disabled>Archivo no disponible...</button>"
+            )+
+            "</div>" +
+            "<div class='form-group'>" +
             "<label for='observations'><strong>Observaciones:</strong></label>" +
             "<textarea id='observations' class='form-control' rows='3' placeholder='Escribe aquí tus observaciones...'></textarea>" +
             "</div>" +
@@ -219,7 +229,7 @@
             <%
                 // Iterar la lista de programadores para mostrarlos en el select
                 try {
-                    for (Map.Entry<Integer, String> programmer : listNames.fetchProgramerListNames(user.getId(), 1).entrySet()) {
+                    for (Map.Entry<Integer, String> programmer : listNames.fetchProgramerListNames(user.getId(), 3).entrySet()) {
             %>
             message += "<option value='<%= programmer.getKey() %>'><%= programmer.getValue() %></option>"; // Definir las opciones del select
             <%
@@ -237,7 +247,7 @@
             <%
                 // Lo mismo para los probadores
                 try {
-                    for (Map.Entry<Integer, String> tester : listNames.fetchTestersListNames(user.getId(), 1).entrySet()) {
+                    for (Map.Entry<Integer, String> tester : listNames.fetchTestersListNames(user.getId(), 3).entrySet()) {
             %>
             message += "<option value='<%= tester.getKey() %>'><%= tester.getValue() %></option>";
             <%

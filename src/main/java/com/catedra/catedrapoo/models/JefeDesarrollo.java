@@ -25,6 +25,7 @@ public class JefeDesarrollo {
                 "t.name AS ticket_name, " +
                 "t.description AS ticket_description, " +
                 "t.created_at AS ticket_created_at, " +
+                "t.pdf AS pdf, " +
                 "s.name AS state, " +
                 "u.name AS boss_name, " +
                 "u2.name AS dev_boss_name, " +
@@ -50,6 +51,7 @@ public class JefeDesarrollo {
                     rs.getString("area_name"),
                     rs.getString("boss_name"),
                     rs.getString("dev_boss_name"),
+                    rs.getString("pdf"),
                     rs.getString("ticket_created_at")
             );
             ticketList.put(ticket.getCode(), ticket);

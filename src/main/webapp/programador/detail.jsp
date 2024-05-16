@@ -77,6 +77,12 @@
         }
     %>
     <h1 class="text-center">Información del ticket</h1>
+    <%
+        if(ticket.getPdf() != null && !ticket.getPdf().isEmpty()){
+    %>
+            <a type='text' id='pdf_file' class='btn btn-primary'  target='_blank' href='/flc?fileName=<%= ticket.getPdf() %>'>Descargar archivo de detalles</a><%
+        }
+    %>
     <hr class="mb-3"/>
     <form action="#"> <!-- Formulario de información del ticket -->
         <div class="row g-2">

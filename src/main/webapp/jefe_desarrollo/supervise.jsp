@@ -99,8 +99,8 @@
                         logsArray.append("]");
 
                         // Reemplazar los saltos de línea por "\n" para evitar errores en el HTML
-                        String description = ticket.getDescription().replace("\r\n", "\\n");
-                        String observations = ticket.getObservations().replace("\r\n", "\\n");
+                        String description = ticket.getDescription().replace("\r\n", "\\n").replace("\n", "\\n");
+                        String observations = ticket.getObservations().replace("\r\n", "\\n").replace("\n", "\\n");
                 %>
                 <tr>
                     <!-- Imprimiendo los demás datos de la iteración -->
@@ -141,6 +141,7 @@
                                         tester_name: "<%= ticket.getTester_name() != null ? ticket.getTester_name() : "No asignado" %>",
                                         created_at: "<%= ticket.getCreated_at() %>",
                                         due_date: "<%= ticket.getDue_date() != null ? ticket.getDue_date() : "No asignada" %>",
+                                        pdf: "<%= ticket.getPdf() %>"
                                         })'
                         >
                             Ver detalles
@@ -239,6 +240,13 @@
             "<label for='observations'><strong>Observaciones del jefe de desarrollo:</strong></label>" +
             "<textarea id='observations' class='form-control' rows='3' readonly>" + ticket.observations + "</textarea>" +
             "</div>" +
+            "<label for='pdf_file' class='mr-3'><strong>Archivos de detalles:</strong></label>" +
+            (
+                ticket.pdf !== "null" && ticket.pdf !== ''  ?
+                    "<a type='text' id='pdf_file' class='btn btn-primary'  target='_blank' href='/flc?fileName="+ticket.pdf+"'>Descargar archivo de detalles</a>"
+                    :
+                    "<button type='button' class='btn btn-primary disabled' disabled>Archivo no disponible...</button>"
+            )+
             "<div class='row g-2'>" +
             "<div class='form-group col-md'>" +
             "<label for='created_at'><strong>Fecha de solicitud:</strong></label>" +
