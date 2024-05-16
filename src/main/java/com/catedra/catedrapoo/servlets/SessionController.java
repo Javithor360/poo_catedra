@@ -1,6 +1,6 @@
 package com.catedra.catedrapoo.servlets;
 
-import com.catedra.catedrapoo.beans.UserSessionBean;
+import com.catedra.catedrapoo.beans.UserBean;
 import com.catedra.catedrapoo.models.Conexion;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -40,7 +40,7 @@ public class SessionController extends HttpServlet {
 
             // Si las credenciales son las del administrador se redirige a la vista de superadmin
             if(email.equals("admin") && password.equals("admin")) {
-                UserSessionBean admin = new UserSessionBean(0, "Administrador", "admin", null, null, 0, null);
+                UserBean admin = new UserBean(0, "Administrador", "admin", null, null, 0, null);
                 currentSession.setAttribute("user", admin);
 
                 response.sendRedirect("/admin/index.jsp");
@@ -58,7 +58,7 @@ public class SessionController extends HttpServlet {
                 // Si el usuario existe en la base de datos
                 if(rs.next()) {
                     // Instancia del usuario para la sesión con sus parámetros
-                    UserSessionBean user = new UserSessionBean(
+                    UserBean user = new UserBean(
                             rs.getInt("id"),
                             rs.getString("name"),
                             rs.getString("email"),

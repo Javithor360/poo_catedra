@@ -1,6 +1,6 @@
 package com.catedra.catedrapoo.servlets;
 
-import com.catedra.catedrapoo.beans.UserSessionBean;
+import com.catedra.catedrapoo.beans.UserBean;
 import com.catedra.catedrapoo.models.JefeDesarrollo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -36,7 +36,7 @@ public class JefeDesarrolloController extends HttpServlet {
             }
 
             HttpSession currentSession = request.getSession(false);
-            UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+            UserBean user = (UserBean) currentSession.getAttribute("user");
 
             // Capturando el valor de la acción
             String action = request.getParameter("action");

@@ -29,6 +29,11 @@ public class Conexion {
         }
     }
 
+    // Método para obtener la conexión establecida
+    public Connection getConnection() {
+        return connection;
+    }
+
     // Método para obtener los valores del ResultSet
     public ResultSet getRs() { return rs; }
 

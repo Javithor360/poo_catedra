@@ -1,4 +1,4 @@
-<%@ page import="com.catedra.catedrapoo.beans.UserSessionBean" %>
+<%@ page import="com.catedra.catedrapoo.beans.UserBean" %>
 <%@ page import="com.catedra.catedrapoo.beans.TicketBean" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.Map" %>
@@ -8,7 +8,7 @@
 <%
     // Obtener la sesión actual
     HttpSession currentSession = request.getSession(false);
-    UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+    UserBean user = (UserBean) currentSession.getAttribute("user");
 
     // Verificar si el usuario es un jefe de desarrollo
     if (user == null || user.getRole_id() != 1) {

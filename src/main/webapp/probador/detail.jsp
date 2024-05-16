@@ -1,5 +1,5 @@
 <%@ page import="com.catedra.catedrapoo.beans.TicketBean" %>
-<%@ page import="com.catedra.catedrapoo.beans.UserSessionBean" %>
+<%@ page import="com.catedra.catedrapoo.beans.UserBean" %>
 <%@ page import="com.catedra.catedrapoo.beans.BitacoraBean" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
@@ -9,7 +9,7 @@
 <%
     // Obtener la sesión actual
     HttpSession currentSession = request.getSession(false);
-    UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+    UserBean user = (UserBean) currentSession.getAttribute("user");
     TicketBean ticket = (TicketBean) request.getAttribute("ticket");
 
     // Si no hay sesión o el usuario no es un probador, redirigir al login

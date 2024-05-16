@@ -1,6 +1,6 @@
 package com.catedra.catedrapoo.servlets;
 
-import com.catedra.catedrapoo.beans.UserSessionBean;
+import com.catedra.catedrapoo.beans.UserBean;
 import com.catedra.catedrapoo.models.Admin;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Date;
 
 @WebServlet(name = "AdminController", value = "/adm")
@@ -36,7 +35,7 @@ public class AdminController extends HttpServlet {
             }
 
             HttpSession currentSession = request.getSession(false);
-            UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+            UserBean user = (UserBean) currentSession.getAttribute("user");
 
             // Capturando el valor de la acción
             String action = request.getParameter("action");
@@ -55,6 +54,12 @@ public class AdminController extends HttpServlet {
                 case "delete_user":
                     deleteUser(request, response);
                     break;
+                case "display_areas":
+                    displayAreas(request, response);
+                    break;
+                case "new_area":
+                    createArea(request, response);
+                    break;
             }
         }
     }
@@ -70,7 +75,7 @@ public class AdminController extends HttpServlet {
 
     private void displayUserById(final HttpServletRequest request, final HttpServletResponse response, final int id) {
         try {
-            UserSessionBean selected_user = admin.getUserById(id);
+            UserBean selected_user = admin.getUserById(id);
 
             if (selected_user == null) {
                 response.sendRedirect("/adm?action=display_users");
@@ -78,7 +83,7 @@ public class AdminController extends HttpServlet {
             }
 
             request.setAttribute("selected_user", selected_user);
-            request.getRequestDispatcher("/admin/form.jsp?id=" + id).forward(request, response);
+            request.getRequestDispatcher("/admin/user_form.jsp?id=" + id).forward(request, response);
         } catch (IOException | SQLException | ServletException e) {
             System.out.println(e.getMessage());
         }
@@ -90,7 +95,7 @@ public class AdminController extends HttpServlet {
             Date birthdate = dateFormat.parse(request.getParameter("fecha_nac"));
             Date created_at = dateFormat.parse(request.getParameter("fecha_crea"));
 
-            UserSessionBean modifiedUser = new UserSessionBean(
+            UserBean modifiedUser = new UserBean(
                     Integer.parseInt(request.getParameter("id")),
                     request.getParameter("nombre"),
                     request.getParameter("email"),
@@ -120,6 +125,49 @@ public class AdminController extends HttpServlet {
                 response.sendRedirect("/admin/users.jsp?info=success_delete_user");
             } else {
                 response.sendRedirect("/admin/users.jsp?info=error_delete_user");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void displayAreas(final HttpServletRequest request, final HttpServletResponse response) {
+        try {
+            request.setAttribute("areas", admin.getAreas());
+            request.getRequestDispatcher("/admin/areas.jsp").forward(request, response);
+        } catch (IOException | SQLException | ServletException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void createArea(final HttpServletRequest request, final HttpServletResponse response) {
+        try {
+            System.out.println(request.getParameter("prefix") + " " + request.getParameter("name") + " " + request.getParameter("boss") + " " + request.getParameter("dev_boss") + " " + request.getParameter("empNum") + " " + request.getParameter("devNum"));
+
+            if(request.getParameter("prefix") == null || request.getParameter("name") == null || request.getParameter("boss") == null || request.getParameter("dev_boss") == null || request.getParameter("empNum") == null || request.getParameter("devNum") == null) {
+                response.sendRedirect("/admin/area_form.jsp?info=error_empty_fields");
+                return;
+            }
+
+            String prefix = request.getParameter("prefix");
+            String name = request.getParameter("name");
+            int boss_id = Integer.parseInt(request.getParameter("boss"));
+            int dev_id = Integer.parseInt(request.getParameter("dev_boss"));
+            int empNum = Integer.parseInt(request.getParameter("empNum"));
+            int devNum = Integer.parseInt(request.getParameter("devNum"));
+
+            if(prefix.length() != 3) {
+                response.sendRedirect("/admin/area_form.jsp?info=error_prefix_length");
+                return;
+            }
+
+            System.out.println(prefix + " " + name + " " + boss_id + " " + dev_id + " " + empNum + " " + devNum);
+
+            if(admin.createArea(prefix, name, boss_id, dev_id, empNum, devNum)) {
+                response.sendRedirect("/admin/areas.jsp?info=success_create_area");
+            } else {
+                response.sendRedirect("/admin/areas.jsp?info=error_create_area");
             }
         } catch (Exception e) {
             e.printStackTrace();

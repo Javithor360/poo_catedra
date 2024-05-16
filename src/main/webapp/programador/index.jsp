@@ -1,4 +1,4 @@
-<%@ page import="com.catedra.catedrapoo.beans.UserSessionBean" %>
+<%@ page import="com.catedra.catedrapoo.beans.UserBean" %>
 <%@ page import="com.catedra.catedrapoo.beans.TicketBean" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -6,7 +6,7 @@
 <%
     // Verificar si el usuario tiene una sesión activa
     HttpSession currentSession = request.getSession(false);
-    UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+    UserBean user = (UserBean) currentSession.getAttribute("user");
 
     // Si no hay sesión activa o el usuario no es un programador, redirigir al login
     if(user == null || user.getRole_id() != 2) {

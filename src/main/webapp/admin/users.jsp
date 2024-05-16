@@ -1,11 +1,11 @@
-<%@ page import="com.catedra.catedrapoo.beans.UserSessionBean" %>
+<%@ page import="com.catedra.catedrapoo.beans.UserBean" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
     // Obtener la sesión actual
     HttpSession currentSession = request.getSession(false);
-    UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+    UserBean user = (UserBean) currentSession.getAttribute("user");
 
     // Verificar si el usuario es nulo o si no es un administrador
     if(user == null || user.getRole_id() != 0) {
@@ -21,7 +21,6 @@
         return;
     }
 
-    System.out.println(request.getAttribute("info") != null ? request.getAttribute("info") : "No hay mensajes");
     if(request.getParameter("info") != null) {
         if(request.getParameter("info").equals("success_update_user")) {
             request.setAttribute("info", "Usuario actualizado correctamente");
@@ -80,7 +79,7 @@
                 <tbody>
                 <%
                     // Obtener la lista de usuarios
-                    HashMap<Integer, UserSessionBean> user_list = (HashMap<Integer, UserSessionBean>) request.getAttribute("users");
+                    HashMap<Integer, UserBean> user_list = (HashMap<Integer, UserBean>) request.getAttribute("users");
                     if (user_list == null || user_list.isEmpty()) {
                 %>
                     <tr>
@@ -88,7 +87,7 @@
                     </tr>
                 <%
                     } else {
-                        for (UserSessionBean employee : user_list.values()) {
+                        for (UserBean employee : user_list.values()) {
                 %>
                     <tr>
                         <td><%= employee.getId() %></td>
@@ -98,7 +97,7 @@
                         <td><%= employee.getGender().equals("M") ? "Masculino" : "Femenino" %></td>
                         <td><%= employee.getCreated_at() %></td>
                         <td>
-                            <a href="/admin/form.jsp?id=<%= employee.getId() %>" class="btn btn-primary">Editar</a>
+                            <a href="/admin/user_form.jsp?id=<%= employee.getId() %>" class="btn btn-primary">Editar</a>
                             <a href="/adm?action=delete_user&id=<%= employee.getId() %>" class="btn btn-danger">Eliminar</a>
                         </td>
                     </tr>

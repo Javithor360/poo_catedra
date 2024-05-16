@@ -1,4 +1,4 @@
-<%@ page import="com.catedra.catedrapoo.beans.UserSessionBean" %>
+<%@ page import="com.catedra.catedrapoo.beans.UserBean" %>
 <%@ page import="com.catedra.catedrapoo.beans.TicketBean" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -6,7 +6,7 @@
 <%
     // Obtener la sesión actual
     HttpSession currentSession = request.getSession(false);
-    UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+    UserBean user = (UserBean) currentSession.getAttribute("user");
 
     // Verificar si el usuario es nulo o si no es un probador
     if(user == null || user.getRole_id() != 4) {

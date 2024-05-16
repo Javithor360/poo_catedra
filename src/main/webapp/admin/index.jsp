@@ -1,9 +1,9 @@
-<%@ page import="com.catedra.catedrapoo.beans.UserSessionBean" %>
+<%@ page import="com.catedra.catedrapoo.beans.UserBean" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     // Verificar si el admin tiene una sesión activa
     HttpSession currentSession = request.getSession(false);
-    UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+    UserBean user = (UserBean) currentSession.getAttribute("user");
 
     if (user == null || user.getRole_id() != 0) {
         response.sendRedirect("../login.jsp");
@@ -41,7 +41,7 @@
                 <div class="card-body align-content-center">
                     <h5 class="card-title">Gestión de áreas</h5>
                     <p class="card-text">Supervisa y administra la información de cada área funcional</p>
-                    <a href="#" class="btn btn-primary">Registrarse ahora</a>
+                    <a href="/admin/areas.jsp" class="btn btn-primary">Accede aquí</a>
 
                 </div>
             </div>
@@ -53,7 +53,7 @@
                 <div class="card-body align-content-center">
                     <h5 class="card-title">Gestión de grupos</h5>
                     <p class="card-text">Revisa la organización de los grupos para todas las áreas</p>
-                    <a href="#" class="btn btn-primary">Abrir menú</a>
+                    <a href="#" class="btn btn-primary">Accede aquí</a>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                 <div class="card-body align-content-center">
                     <h5 class="card-title">Reportes</h5>
                     <p class="card-text">Genera y transfiere información de los casos</p>
-                    <a href="#" class="btn btn-primary">Revisar productos</a>
+                    <a href="#" class="btn btn-primary">Accede aquí</a>
                 </div>
             </div>
         </div>

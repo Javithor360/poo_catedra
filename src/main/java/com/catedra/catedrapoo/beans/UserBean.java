@@ -2,7 +2,7 @@ package com.catedra.catedrapoo.beans;
 
 import java.util.Date;
 
-public class UserSessionBean {
+public class UserBean {
     private int id;
     private String name;
     private String email;
@@ -13,7 +13,7 @@ public class UserSessionBean {
     private String role_name;
     private String password;
 
-    public UserSessionBean(int id, String name, String email, String gender, Date birthday, Integer role_id, Date created_at) {
+    public UserBean(int id, String name, String email, String gender, Date birthday, Integer role_id, Date created_at) {
         this.id = id;
         this.name = name;
         this.email = email;

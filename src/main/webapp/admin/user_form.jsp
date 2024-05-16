@@ -1,12 +1,12 @@
-<%@ page import="com.catedra.catedrapoo.beans.UserSessionBean" %>
+<%@ page import="com.catedra.catedrapoo.beans.UserBean" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
     // Obtener la sesión actual
     HttpSession currentSession = request.getSession(false);
-    UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+    UserBean user = (UserBean) currentSession.getAttribute("user");
 
-    UserSessionBean selected_user = (UserSessionBean) request.getAttribute("selected_user");
+    UserBean selected_user = (UserBean) request.getAttribute("selected_user");
 
     // Verificar si el usuario es nulo o si no es un administrador
     if(user == null || user.getRole_id() != 0) {

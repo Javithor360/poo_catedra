@@ -1,17 +1,17 @@
 package com.catedra.catedrapoo.models;
 
-import com.catedra.catedrapoo.beans.UserSessionBean;
+import com.catedra.catedrapoo.beans.AreaBean;
+import com.catedra.catedrapoo.beans.BasicUserBean;
+import com.catedra.catedrapoo.beans.UserBean;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 
 public class Admin {
 
-    public HashMap<Integer, UserSessionBean> getUsers() throws SQLException {
+    public HashMap<Integer, UserBean> getUsers() throws SQLException {
         Conexion conexion = null;
-        HashMap<Integer, UserSessionBean> users = new HashMap<>();
+        HashMap<Integer, UserBean> users = new HashMap<>();
 
         try {
             conexion = new Conexion();
@@ -21,7 +21,7 @@ public class Admin {
 
             ResultSet rs = conexion.getRs();
             while (rs.next()) {
-                UserSessionBean user = new UserSessionBean(
+                UserBean user = new UserBean(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("email"),
@@ -43,9 +43,9 @@ public class Admin {
         return users;
     }
 
-    public UserSessionBean getUserById(int id) throws SQLException {
+    public UserBean getUserById(int id) throws SQLException {
         Conexion conexion = null;
-        UserSessionBean user = null;
+        UserBean user = null;
 
         try {
             conexion = new Conexion();
@@ -56,7 +56,7 @@ public class Admin {
 
             ResultSet rs = conexion.getRs();
             if (rs.next()) {
-                user = new UserSessionBean(
+                user = new UserBean(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("email"),
@@ -78,7 +78,7 @@ public class Admin {
         return user;
     }
 
-    public boolean updateUser(UserSessionBean user) throws SQLException {
+    public boolean updateUser(UserBean user) throws SQLException {
         Conexion conexion = null;
         boolean updated = false;
 
@@ -134,5 +134,161 @@ public class Admin {
             }
         }
         return deleted;
+    }
+
+    public static HashMap<Integer, UserBean> getUsersByRoleWithoutRole(int role_id) throws SQLException {
+        Conexion conexion = null;
+        HashMap<Integer, UserBean> users = new HashMap<>();
+
+        try {
+            conexion = new Conexion();
+            String sql = "SELECT u.*, r.name AS role_name " +
+                    "FROM users u INNER JOIN roles r ON u.role_id = r.id " +
+                    "WHERE u.role_id = ? AND u.id NOT IN (SELECT boss_id FROM assignments_map)";
+            PreparedStatement sqlStatement = conexion.setQuery(sql);
+            sqlStatement.setInt(1, role_id);
+
+            ResultSet rs = sqlStatement.executeQuery();
+            while (rs.next()) {
+                UserBean user = new UserBean(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("gender"),
+                        rs.getDate("birthday"),
+                        rs.getInt("role_id"),
+                        rs.getDate("created_at")
+                );
+                user.setRole_name(rs.getString("role_name"));
+                users.put(user.getId(), user);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conexion != null) {
+                conexion.closeConnection();
+            }
+        }
+        return users;
+    }
+
+    public HashMap<Integer, AreaBean> getAreas() throws SQLException {
+        Conexion conexion = null;
+        HashMap<Integer, AreaBean> areas = new HashMap<>();
+
+        try {
+            conexion = new Conexion();
+            String sql = "SELECT " +
+                    "a.id AS area_id, " +
+                    "a.prefix_code AS area_prefix, " +
+                    "a.name AS area_name, " +
+                    "b.id AS boss_id, " +
+                    "b.name AS boss_name, " +
+                    "p.id AS dev_id, " +
+                    "p.name AS dev_name " +
+                    "FROM areas a " +
+                    "LEFT JOIN users b ON a.boss_id = b.id " +
+                    "LEFT JOIN users p ON a.dev_boss_id = p.id;";
+            conexion.setRs(sql);
+
+            ResultSet rs = conexion.getRs();
+            while (rs.next()) {
+                AreaBean area = new AreaBean(
+                        rs.getInt("area_id"),
+                        rs.getString("area_prefix"),
+                        rs.getString("area_name"),
+                        new BasicUserBean(
+                                rs.getInt("boss_id"),
+                                rs.getString("boss_name")
+                        ),
+                        new BasicUserBean(
+                                rs.getInt("dev_id"),
+                                rs.getString("dev_name")
+                        )
+                );
+                areas.put(area.getId(), area);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conexion != null) {
+                conexion.closeConnection();
+            }
+        }
+        return areas;
+    }
+
+    public boolean createArea(String prefix, String name, int boss_id, int dev_boss_id, int employeeGroupNum, int devGroupNum) throws SQLException {
+        Conexion conexion = new Conexion();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet generatedKeys = null;
+        boolean created = false;
+
+        try {
+            conn = conexion.getConnection();
+            conn.setAutoCommit(false);
+
+            // Inserción para tabla de áreas
+            String queryArea = "INSERT INTO areas (name, prefix_code, boss_id, dev_boss_id) VALUES (?, ?, ?, ?)";
+            stmt = conn.prepareStatement(queryArea, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, name);
+            stmt.setString(2, prefix);
+            stmt.setInt(3, boss_id);
+            stmt.setInt(4, dev_boss_id);
+            stmt.executeUpdate();
+
+            generatedKeys = stmt.getGeneratedKeys();
+            int newAreaId = 0;
+            if (generatedKeys.next()) {
+                newAreaId = generatedKeys.getInt(1);
+            }
+
+            // Inserción para tabla de grupos
+            String[] groupNames = {"Empleados de " + name, "Programadores para " + prefix};
+            int[] groupIDs = new int[2];
+
+            for (int i = 0; i < groupNames.length; i++) {
+                String queryGroup = "INSERT INTO `groups` (name) VALUES (?)";
+                stmt = conn.prepareStatement(queryGroup, Statement.RETURN_GENERATED_KEYS);
+                stmt.setString(1, groupNames[i]);
+                stmt.executeUpdate();
+                generatedKeys = stmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    groupIDs[i] = generatedKeys.getInt(1);
+                }
+            }
+
+            // Inserción para tabla de asignaciones con los registros recién hechos
+            String queryAssign = "INSERT INTO assignments_map (boss_id, area_id, users_group_id) VALUES (?, ?, ?), (?, ?, ?)";
+            stmt = conn.prepareStatement(queryAssign);
+            stmt.setInt(1, boss_id);
+            stmt.setInt(2, newAreaId);
+            stmt.setInt(3, groupIDs[0]);
+            stmt.setInt(4, dev_boss_id);
+            stmt.setInt(5, newAreaId);
+            stmt.setInt(6, groupIDs[1]);
+            stmt.executeUpdate();
+
+            conn.commit(); // Confirmar transacción
+
+            if(newAreaId > 0) created = true;
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback(); // En caso de error, realiza un rollback
+                } catch (SQLException ex) {
+                    e.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (generatedKeys != null) generatedKeys.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+            conexion.closeConnection();
+        }
+        return created;
     }
 }

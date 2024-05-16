@@ -1,9 +1,9 @@
-<%@ page import="com.catedra.catedrapoo.beans.UserSessionBean" %>
+<%@ page import="com.catedra.catedrapoo.beans.UserBean" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
     HttpSession currentSession = request.getSession(false);
-    UserSessionBean user = (UserSessionBean) currentSession.getAttribute("user");
+    UserBean user = (UserBean) currentSession.getAttribute("user");
 %>
 
 <nav class="navbar navbar-dark bg-dark navbar-expand-sm">
