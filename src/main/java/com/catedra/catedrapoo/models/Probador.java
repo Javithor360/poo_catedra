@@ -25,6 +25,7 @@ public class Probador {
                     "t.due_date AS ticket_due_date, " +
                     "t.created_at AS ticket_created_at, " +
                     "t.programmer_id AS programmer_id, " +
+                    "t.pdf AS pdf, " +
                     "s.name AS state, s.id AS state_id, " +
                     "u.name AS boss_name, " +
                     "u2.name AS dev_boss_name, " +
@@ -55,6 +56,7 @@ public class Probador {
                         rs.getString("state"),
                         rs.getInt("state_id"),
                         rs.getString("observations"),
+                        rs.getString("pdf"),
                         rs.getInt("programmer_id"),
                         rs.getString("area_name"),
                         rs.getString("boss_name"),
@@ -111,6 +113,7 @@ public class Probador {
                     "t.due_date AS ticket_due_date, " +
                     "t.created_at AS ticket_created_at, " +
                     "t.programmer_id AS programmer_id, " +
+                    "t.pdf AS pdf, " +
                     "s.name AS state, " +
                     "u.name AS boss_name, " +
                     "u2.name AS dev_boss_name, " +
@@ -140,6 +143,7 @@ public class Probador {
                         rs.getString("state"),
                         rs.getInt("state_id"),
                         rs.getString("observations"),
+                        rs.getString("pdf"),
                         rs.getInt("programmer_id"),
                         rs.getString("area_name"),
                         rs.getString("boss_name"),

@@ -5,11 +5,16 @@ import com.catedra.catedrapoo.models.JefeArea;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.time.Year;
+import java.util.Random;
 
 @WebServlet(name = "JefeAreaController", value = "/jac")
+@MultipartConfig // Config necesaria para recibir los datos de un formulario enctype='multipart/form-data'
 public class JefeAreaController extends HttpServlet {
 
     JefeArea jam = new JefeArea();
@@ -75,19 +80,58 @@ public class JefeAreaController extends HttpServlet {
         try {
             String title = request.getParameter("ticketTitle");
             String description = request.getParameter("ticketDescription");
+            String code = generateNewCode(boss_id);
+
+
+            // Manejo de archivo adjuntado
+            Part filePart = request.getPart("ticketFile"); // Solicitando el archivo a tratar
+            String fileName = "";
+
+            if(filePart != null && filePart.getSize() > 0) {
+                fileName = code + ".pdf";
+                String storagePath = getServletContext().getRealPath("/storage");
+
+
+                // Verificar si el directorio "storage" existe
+                File storageDir = new File(storagePath);
+                if(!storageDir.exists()) {
+                    // Si no existe, se crea
+                    if (!storageDir.mkdir()) {
+                        // Si no se puede crear el directorio, maneja el error
+                        throw new IOException("No se pudo crear el directorio de almacenamiento");
+                    }
+                }
+
+                // Construir la ruta completa para guardar el archivo
+                String filePath = storagePath + File.separator + fileName;
+
+                // Guardar el archivo en el servidor
+                filePart.write(filePath);
+            }
+
 
             if(title.isEmpty() || description.isEmpty()) {
                 response.sendRedirect("/jefe_area/index.jsp?info=error_empty_fields");
             }
 
-            if(jam.createNewTicket(boss_id, title, description)) {
+            if(jam.createNewTicket(boss_id, title, description, code, fileName)) {
                 response.sendRedirect("/jefe_area/index.jsp?info=success_new_ticket");
             } else {
                 response.sendRedirect("/jefe_area/index.jsp?info=error_new_ticket");
             }
 
-        } catch (SQLException | IOException e) {
+        } catch (SQLException | ServletException | IOException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public String generateNewCode(int user_id) throws SQLException{
+        Random ran = new Random();
+        String prefix = JefeArea.getAreaPrefixCode(user_id);
+        String year = String.valueOf(Year.now());
+        String num = String.valueOf(ran.nextInt(999 - 100 + 1) + 100);
+
+        return prefix+year+num;
     }
 }

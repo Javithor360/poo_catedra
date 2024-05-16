@@ -24,6 +24,7 @@ public class Programador {
                     "t.state_id AS state_id, " +
                     "t.due_date AS ticket_due_date, " +
                     "t.created_at AS ticket_created_at, " +
+                    "t.pdf AS pdf, " +
                     "t.programmer_id AS programmer_id, " +
                     "s.name AS state, " +
                     "u.name AS boss_name, " +
@@ -56,6 +57,7 @@ public class Programador {
                         rs.getString("state"),
                         rs.getInt("state_id"),
                         rs.getString("observations"),
+                        rs.getString("pdf"),
                         rs.getInt("programmer_id"),
                         rs.getString("area_name"),
                         rs.getString("boss_name"),
@@ -123,6 +125,7 @@ public class Programador {
                     "t.state_id AS state_id, " +
                     "t.due_date AS ticket_due_date, " +
                     "t.created_at AS ticket_created_at, " +
+                    "t.pdf AS pdf, " +
                     "t.programmer_id AS programmer_id, " +
                     "s.name AS state, " +
                     "u.name AS boss_name, " +
@@ -153,6 +156,7 @@ public class Programador {
                         rs.getString("state"),
                         rs.getInt("state_id"),
                         rs.getString("observations"),
+                        rs.getString("pdf"),
                         rs.getInt("programmer_id"),
                         rs.getString("area_name"),
                         rs.getString("boss_name"),

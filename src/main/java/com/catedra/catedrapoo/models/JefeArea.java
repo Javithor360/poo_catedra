@@ -28,6 +28,7 @@ public class JefeArea {
                     "t.due_date AS ticket_due_date, " +
                     "t.created_at AS ticket_created_at, " +
                     "t.programmer_id AS programmer_id, " +
+                    "t.pdf AS pdf, " +
                     "s.name AS state, " +
                     "u.name AS boss_name, " +
                     "u2.name AS dev_boss_name, " +
@@ -58,6 +59,7 @@ public class JefeArea {
                         rs.getString("state"),
                         rs.getInt("state_id"),
                         rs.getString("observations"),
+                        rs.getString("pdf"),
                         rs.getInt("programmer_id"),
                         rs.getString("area_name"),
                         rs.getString("boss_name"),
@@ -121,6 +123,7 @@ public class JefeArea {
                     "t.name AS ticket_name, " +
                     "t.description AS ticket_description, " +
                     "t.state_id AS state_id, " +
+                    "t.pdf AS pdf, " +
                     "t.due_date AS ticket_due_date, " +
                     "t.created_at AS ticket_created_at, " +
                     "t.programmer_id AS programmer_id, " +
@@ -153,6 +156,7 @@ public class JefeArea {
                         rs.getString("state"),
                         rs.getInt("state_id"),
                         rs.getString("observations"),
+                        rs.getString("pdf"),
                         rs.getInt("programmer_id"),
                         rs.getString("area_name"),
                         rs.getString("boss_name"),
@@ -203,7 +207,7 @@ public class JefeArea {
     }
 
     // Crear un nuevo caso
-    public boolean createNewTicket(int boss_id, String title, String description) throws SQLException {
+    public boolean createNewTicket(int boss_id, String title, String description, String code, String file) throws SQLException {
         int dev_boss_id = 0;
         Conexion conexion = null;
 
@@ -218,14 +222,15 @@ public class JefeArea {
             }
 
             PreparedStatement stmt;
-            String queryInsert = "INSERT INTO tickets (code, name, description, state_id, boss_id, dev_boss_id, created_at) VALUES (?, ?, ?, 1, ?, ?, CURRENT_TIMESTAMP)";
+            String queryInsert = "INSERT INTO tickets (code, name, description, pdf, state_id, boss_id, dev_boss_id, created_at) VALUES (?, ?, ?, ?, 1, ?, ?, CURRENT_TIMESTAMP)";
 
             stmt = conexion.setQuery(queryInsert);
-            stmt.setString(1, generateNewCode(boss_id));
+            stmt.setString(1, code);
             stmt.setString(2, title);
             stmt.setString(3, description);
-            stmt.setInt(4, boss_id);
-            stmt.setInt(5, dev_boss_id);
+            stmt.setString(4, file);
+            stmt.setInt(5, boss_id);
+            stmt.setInt(6, dev_boss_id);
 
             int rowsAffected = stmt.executeUpdate();
             stmt.close();
@@ -243,16 +248,7 @@ public class JefeArea {
         }
     }
 
-    public String generateNewCode(int user_id) throws SQLException{
-        Random ran = new Random();
-        String prefix =  getAreaPrefixCode(user_id);
-        String year = String.valueOf(Year.now());
-        String num = String.valueOf(ran.nextInt(999 - 100 + 1) + 100);
-
-        return prefix+year+num;
-    }
-
-    public String getAreaPrefixCode(int user_id) throws SQLException{
+    public static String getAreaPrefixCode(int user_id) throws SQLException{
         Conexion conexion = new Conexion();
 
         try{

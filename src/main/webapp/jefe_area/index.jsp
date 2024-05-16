@@ -129,18 +129,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
             </div>
             <div class="modal-body" id="newTicketModalBody">
-                <form method="POST" action="/jac">
-                    <div class="mb-3">
+                <form method="POST" action="/jac" onsubmit="return validateForm()" enctype="multipart/form-data">
+                    <div class="form-group mb-3">
                         <label for="ticketTitle" class="form-label">Título del caso</label>
                         <input type="text" class="form-control" id="ticketTitle" name="ticketTitle" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group mb-3">
                         <label for="ticketDescription" class="form-label">Descripción del caso</label>
                         <textarea class="form-control" id="ticketDescription" name="ticketDescription" required></textarea>
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group mb-3">
                         <label for="ticketFile" class="form-label">Archivo PDF</label>
-                        <input type="file" class="form-control form-control-file" id="ticketFile" />
+                        <input type="file" class="form-control form-control-file" id="ticketFile" name="ticketFile" accept="application/pdf" />
                     </div>
                     <div class="d-flex">
                         <input type="hidden" name="action" value="new_ticket" />
@@ -153,5 +153,63 @@
     </div>
 </div>
 
+<!-- Modal: Manejo de errores -->
+<div class="modal fade" id="extraModal" tabindex="-1" aria-labelledby="extraModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="extraModalLabel">Atención</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+            </div>
+            <div class="modal-body" id="extraModalBody">
+                <!-- Contenido del modal -->
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
+
+<script>
+    function validateForm() {
+        const title = document.getElementById("ticketTitle").value;
+        const description = document.getElementById("ticketDescription").value;
+        const file = document.getElementById("ticketFile");
+
+        if (title === "" || description === "") {
+            showErrorModal("Por favor, completa todos los campos.");
+            return false;
+        } else if (title.length < 10 || description.length < 30) {
+            showErrorModal("El título debe tener al menos 10 caracteres y la descripción 50");
+            return false;
+        } else if (file) {
+            // Verificar la extensión del archivo
+            var fileName = file.files[0].name;
+            var fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'pdf'){
+                showErrorModal("El archivo debe ser de tipo PDF.");
+                file.value = "";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function showErrorModal(msg) {
+        // Mostrar modal de error con el mensaje recibido
+        const errorModalBody = document.getElementById("extraModalBody");
+        errorModalBody.innerHTML = "<p>" + msg + "</p>";
+
+        // Ocultar modal actual y mostrar modal de error
+        let currentModal = bootstrap.Modal.getInstance(document.getElementById('newTicketModal'));
+        currentModal.hide();
+
+        // Mostrar modal de error
+        let errorModal = new bootstrap.Modal(document.getElementById('extraModal'));
+        errorModal.show();
+    }
+</script>
+
 </html>
