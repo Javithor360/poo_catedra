@@ -21,6 +21,12 @@
             <%
                     // Agregar los demás tipos de usuario con un else
                     // aquí si hace falta
+                } else if(user.getRole_id() == 0) {
+            %>
+            <a class="nav-link" aria-current="page" href="/admin/users.jsp">Usuarios</a>
+            <a class="nav-link" aria-current="page" href="/admin/areas.jsp">Áreas</a>
+            <a class="nav-link" aria-current="page" href="/admin/groups.jsp">Grupos</a>
+            <%
                 }
             %>
         </div>
