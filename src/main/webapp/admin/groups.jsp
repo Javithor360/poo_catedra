@@ -64,7 +64,7 @@
                 <td><%= group.getMembers_count() %>
                 </td>
                 <td>
-                    <a href="" class="btn btn-primary">Editar</a>
+                    <a href="updateGroups.jsp?id=<%= group.getId() %>" class="btn btn-primary">Modificar</a>
                 </td>
             </tr>
             <%

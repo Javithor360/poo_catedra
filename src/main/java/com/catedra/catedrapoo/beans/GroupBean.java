@@ -15,6 +15,11 @@ public class GroupBean {
         this.members_count = members_count;
     }
 
+    public GroupBean(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
@@ -54,4 +59,6 @@ public class GroupBean {
     public void setMembers_count(int members_count) {
         this.members_count = members_count;
     }
+
+
 }

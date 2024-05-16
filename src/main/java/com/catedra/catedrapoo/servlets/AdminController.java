@@ -1,10 +1,15 @@
 package com.catedra.catedrapoo.servlets;
 
+import com.catedra.catedrapoo.beans.GroupBean;
 import com.catedra.catedrapoo.beans.UserBean;
 import com.catedra.catedrapoo.models.Admin;
+import com.catedra.catedrapoo.models.Grupo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -15,6 +20,7 @@ import java.util.Date;
 public class AdminController extends HttpServlet {
 
     Admin admin = new Admin();
+    Grupo grupo = new Grupo();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,6 +36,37 @@ public class AdminController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             // Corroborando si se envió una acción
+
+            if(request.getParameter("action") == null) {
+                StringBuilder jsonBuffer = new StringBuilder();
+                String line;
+
+                try (BufferedReader reader = request.getReader()) {
+                    while ((line = reader.readLine()) != null) {
+                        jsonBuffer.append(line);
+                    }
+                }
+
+                JSONObject jsonObj = new JSONObject(jsonBuffer.toString());
+                String action = jsonObj.getString("action");
+
+                if(action == null) {
+                    return;
+                }
+
+                int user_id = jsonObj.getInt("userId");
+                int group_id = jsonObj.getInt("groupId");
+
+                switch (action) {
+                    case "delete_user_from_group":
+                        deleteUserFromGroup(request, response, user_id, group_id);
+                        break;
+                    case "add_user_to_group":
+                        addUserToGroup(request, response, user_id, group_id);
+                        break;
+                }
+            }
+
             if(request.getParameter("action") == null) {
                 return;
             }
@@ -65,6 +102,9 @@ public class AdminController extends HttpServlet {
                     break;
                 case "display_groups":
                     displayGroups(request, response);
+                    break;
+                case "update_group":
+                    updateGroup(request, response);
                     break;
             }
         }
@@ -209,6 +249,62 @@ public class AdminController extends HttpServlet {
             request.setAttribute("groups", admin.getGroups());
             request.getRequestDispatcher("/admin/groups.jsp").forward(request, response);
         } catch (IOException | SQLException | ServletException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void updateGroup(final HttpServletRequest request, final HttpServletResponse response) {
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+
+            GroupBean group = admin.getGroupById(id);
+
+            // Validar si el grupo existe
+            if(group == null) {
+                response.sendRedirect("/admin/groups.jsp?info=error_group_not_found");
+                return;
+            }
+
+            // Obtener el tipo de grupo
+            String type = group.getName().split(" ")[0];
+
+            request.setAttribute("group", group);
+            request.setAttribute("miembros", grupo.getUsersFromGroup(id));
+            request.setAttribute("usuarios", grupo.getUsersWithoutGroup(type));
+
+            request.getRequestDispatcher("/admin/group.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void addUserToGroup(final HttpServletRequest request, final HttpServletResponse response, int user_id, int group_id) {
+        try {
+            response.setContentType("application/json");
+
+            if(admin.addUserToGroup(new UserBean(user_id, new GroupBean(group_id, null)))) {
+                response.getWriter().write("{\"success\": true, \"message\": \"Usuario añadido al grupo correctamente.\"}");
+            } else {
+                response.getWriter().write("{\"success\": false, \"message\": \"No se pudo añadir el usuario al grupo.\"}");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void deleteUserFromGroup(final HttpServletRequest request, final HttpServletResponse response, int user_id, int group_id) {
+        try {
+            response.setContentType("application/json");
+
+            if(admin.removeUserFromGroup(new UserBean(user_id, new GroupBean(group_id, null)))) {
+                response.getWriter().write("{\"success\": true, \"message\": \"Usuario eliminado del grupo correctamente.\"}");
+            } else {
+                response.getWriter().write("{\"success\": false, \"message\": \"No se pudo eliminar el usuario del grupo.\"}");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }

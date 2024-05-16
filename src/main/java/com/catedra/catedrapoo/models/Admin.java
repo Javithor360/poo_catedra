@@ -365,4 +365,89 @@ public class Admin {
         }
         return groupList;
     }
+
+    public GroupBean getGroupById(int id) throws SQLException {
+        GroupBean group = null;
+        Conexion conexion = null;
+
+        try {
+            conexion = new Conexion();
+            String query = "SELECT * FROM `groups` WHERE id = ?";
+            PreparedStatement stmt = conexion.setQuery(query);
+            stmt.setInt(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                group = new GroupBean(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (conexion != null) {
+                conexion.closeConnection();
+            }
+        }
+        return group;
+    }
+
+    public boolean addUserToGroup(UserBean user) throws SQLException {
+        Conexion conexion = null;
+        boolean added = false;
+
+        try {
+            conexion = new Conexion();
+            String query = "INSERT INTO users_groups (user_id, group_id) VALUES (?, ?)";
+            PreparedStatement stmt = conexion.setQuery(query);
+            stmt.setInt(1, user.getId());
+            stmt.setInt(2, user.getGroup().getId());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                added = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (conexion != null) {
+                conexion.closeConnection();
+            }
+        }
+
+        return added;
+    }
+
+    public boolean removeUserFromGroup(UserBean user) throws SQLException {
+        Conexion conexion = null;
+        boolean removed = false;
+
+        try {
+            conexion = new Conexion();
+
+            String query = "DELETE FROM users_groups WHERE user_id = ? AND group_id = ?";
+            PreparedStatement stmt = conexion.setQuery(query);
+            stmt.setInt(1, user.getId());
+            stmt.setInt(2, user.getGroup().getId());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                removed = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (conexion != null) {
+                conexion.closeConnection();
+            }
+        }
+
+        return removed;
+    }
 }

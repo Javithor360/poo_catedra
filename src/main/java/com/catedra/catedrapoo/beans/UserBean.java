@@ -13,6 +13,8 @@ public class UserBean {
     private String role_name;
     private String password;
 
+    private GroupBean group;
+
     public UserBean(int id, String name, String email, String gender, Date birthday, Integer role_id, Date created_at) {
         this.id = id;
         this.name = name;
@@ -21,6 +23,17 @@ public class UserBean {
         this.birthday = birthday;
         this.role_id = role_id;
         this.created_at = created_at;
+    }
+
+    public UserBean(int id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
+    public UserBean(int id, GroupBean group) {
+        this.id = id;
+        this.group = group;
     }
 
     public int getId() {
@@ -93,5 +106,13 @@ public class UserBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public GroupBean getGroup() {
+        return group;
+    }
+
+    public void setGroup(GroupBean group) {
+        this.group = group;
     }
 }
