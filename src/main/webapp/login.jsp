@@ -43,11 +43,11 @@
                     <form action="session_handler" method="post" autocomplete="off">
                         <div class="form-group">
                             <label for="email">Correo</label>
-                            <input type="text" class="form-control" value="admin" id="email" name="email" placeholder="Ingrese su usuario" autocomplete="off">
+                            <input type="text" class="form-control" id="email" name="email" placeholder="Ingrese su usuario" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label for="password">Contraseña</label>
-                            <input type="password" class="form-control" value="admin" id="password" name="password" placeholder="Ingrese su contraseña" autocomplete="off">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" autocomplete="off">
                         </div>
                         <input type="hidden" name="operacion" value="login" />
                         <input type="submit" value="Iniciar sesión" class="btn btn-primary btn-block" />

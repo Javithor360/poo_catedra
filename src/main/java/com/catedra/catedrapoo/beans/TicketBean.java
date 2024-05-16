@@ -19,6 +19,7 @@ public class TicketBean {
     private HashMap<Integer, BitacoraBean> logs;
     private String requester_area_name;
     private String boss_name;
+    private int boss_id;
     private String dev_boss_name;
     private int tester_id;
     private String tester_name;
@@ -51,6 +52,26 @@ public class TicketBean {
         this.pdf = pdf;
         this.programmer_id = programmer_id;
         this.requester_area_name = requester_area_name;
+        this.boss_name = boss_name;
+        this.dev_boss_name = dev_boss_name;
+        this.tester_name = tester_name;
+        this.programmer_name = programmer_name;
+        this.due_date = due_date;
+        this.created_at = created_at;
+    }
+
+    public TicketBean(int id, String code, String name, String description, String state, int state_id, String observations, String pdf, int programmer_id, String requester_area_name, int boss_id, String boss_name, String dev_boss_name, String tester_name, String programmer_name, String due_date, String created_at) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.description = description;
+        this.state = state;
+        this.state_id = state_id;
+        this.observations = observations;
+        this.pdf = pdf;
+        this.programmer_id = programmer_id;
+        this.requester_area_name = requester_area_name;
+        this.boss_id = boss_id;
         this.boss_name = boss_name;
         this.dev_boss_name = dev_boss_name;
         this.tester_name = tester_name;
@@ -199,5 +220,13 @@ public class TicketBean {
 
     public void setPdf(String pdf) {
         this.pdf = pdf;
+    }
+
+    public int getBoss_id() {
+        return boss_id;
+    }
+
+    public void setBoss_id(int boss_id) {
+        this.boss_id = boss_id;
     }
 }

@@ -163,6 +163,108 @@ public class JefeDesarrollo {
         }
     }
 
+    // Obtener un caso específico
+    public TicketBean fetchTicketById(int ticket_id) throws SQLException {
+        Conexion conexion = null;
+        TicketBean ticket = null;
+
+        try {
+            conexion = new Conexion();
+            String query = "SELECT " +
+                    "t.id AS ticket_id, " +
+                    "t.code AS ticket_code, " +
+                    "t.name AS ticket_name, " +
+                    "t.description AS ticket_description, " +
+                    "t.state_id AS state_id, " +
+                    "t.due_date AS ticket_due_date, " +
+                    "t.created_at AS ticket_created_at, " +
+                    "t.programmer_id AS programmer_id, " +
+                    "t.pdf AS pdf, " +
+                    "s.name AS state, " +
+                    "u.name AS boss_name, " +
+                    "u.id AS boss_id, " +
+                    "u2.name AS dev_boss_name, " +
+                    "u3.name AS programmer_name, " +
+                    "u4.name AS tester_name, " +
+                    "a.name AS area_name, " +
+                    "o.description AS observations " +
+                    "FROM tickets t " +
+                    "LEFT JOIN users u ON t.boss_id = u.id " +
+                    "LEFT JOIN users u2 ON t.dev_boss_id = u2.id " +
+                    "LEFT JOIN users u3 ON t.programmer_id = u3.id " +
+                    "LEFT JOIN users u4 ON t.tester_id = u4.id " +
+                    "LEFT JOIN areas a ON t.boss_id = a.boss_id " +
+                    "LEFT JOIN states s ON t.state_id = s.id " +
+                    "LEFT JOIN observations o ON t.id = o.ticket_id " +
+                    "AND t.dev_boss_id = o.writer_id " +
+                    "WHERE t.id = " + ticket_id + " ";
+            conexion.setRs(query);
+
+            ResultSet rs = conexion.getRs();
+            if (rs.next()) {
+                HashMap<Integer, BitacoraBean> ticketLogs = new HashMap<>();
+                ticket = new TicketBean(
+                        rs.getInt("ticket_id"),
+                        rs.getString("ticket_code"),
+                        rs.getString("ticket_name"),
+                        rs.getString("ticket_description"),
+                        rs.getString("state"),
+                        rs.getInt("state_id"),
+                        rs.getString("observations"),
+                        rs.getString("pdf"),
+                        rs.getInt("programmer_id"),
+                        rs.getString("area_name"),
+                        rs.getInt("boss_id"),
+                        rs.getString("boss_name"),
+                        rs.getString("dev_boss_name"),
+                        rs.getString("tester_name"),
+                        rs.getString("programmer_name"),
+                        rs.getString("ticket_due_date"),
+                        rs.getString("ticket_created_at")
+                );
+
+                Conexion conexionLogs = new Conexion();
+                String logsQuery = "SELECT " +
+                        "tl.id AS log_id, " +
+                        "tl.code_ticket AS ticket_code, " +
+                        "tl.name AS log_name, " +
+                        "tl.description AS log_description, " +
+                        "tl.percent AS log_percent, " +
+                        "u.name AS programmer_name, " +
+                        "tl.created_at AS log_created_at " +
+                        "FROM ticket_logs tl " +
+                        "INNER JOIN users u ON tl.programmer_id = u.id " +
+                        "WHERE tl.code_ticket = \"" + ticket.getCode() + "\"";
+                conexionLogs.setRs(logsQuery);
+
+                ResultSet rs2 = conexionLogs.getRs();
+                while (rs2.next()) {
+                    BitacoraBean logs = new BitacoraBean(
+                            rs2.getInt("log_id"),
+                            rs2.getString("ticket_code"),
+                            rs2.getString("log_name"),
+                            rs2.getString("log_description"),
+                            rs2.getDouble("log_percent"),
+                            rs2.getString("programmer_name"),
+                            rs2.getString("log_created_at")
+                    );
+                    ticketLogs.put(logs.getId(), logs);
+                }
+                rs2.close();
+                conexionLogs.closeConnection();
+                ticket.setLogs(ticketLogs);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if(conexion != null) {
+                conexion.closeConnection();
+            }
+        }
+        return ticket;
+    }
+
     // Obteniendo la lista de programadores asignados al jefe de desarrollo
     public HashMap<Integer, String> fetchProgramerListNames(int dev_boss_id, int ticket_id) throws SQLException {
         HashMap<Integer, String> programmers = new HashMap<>();
@@ -175,9 +277,10 @@ public class JefeDesarrollo {
                 "INNER JOIN assignments_map a ON t.dev_boss_id = a.boss_id " +
                 "INNER JOIN users_groups ug ON a.users_group_id = ug.group_id " +
                 "INNER JOIN users u ON ug.user_id = u.id " +
-                "WHERE t.dev_boss_id = " + dev_boss_id + " " +
-                "AND u.role_id = 2 " +
-                "AND t.id = " + ticket_id + ";";
+                "WHERE " +
+                    "t.dev_boss_id = " + dev_boss_id + " " +
+                    "AND u.role_id = 2 " +
+                    "AND t.id = " + ticket_id + ";";
         conexion.setRs(query);
 
         ResultSet rs = conexion.getRs();
@@ -192,7 +295,7 @@ public class JefeDesarrollo {
     }
 
     // Obteniendo la lista de testers asignados al jefe de área solicitante
-    public HashMap<Integer, String> fetchTestersListNames(int dev_boss_id, int ticket_id) throws SQLException {
+    public HashMap<Integer, String> fetchTestersListNames(int boss_id, int ticket_id) throws SQLException {
         HashMap<Integer, String> testers = new HashMap<>();
 
         Conexion conexion = new Conexion();
@@ -203,9 +306,10 @@ public class JefeDesarrollo {
                 "INNER JOIN assignments_map a ON t.boss_id = a.boss_id " +
                 "INNER JOIN users_groups ug ON a.users_group_id = ug.group_id " +
                 "INNER JOIN users u ON ug.user_id = u.id " +
-                "WHERE t.dev_boss_id = " + dev_boss_id + " " +
-                "AND u.role_id = 4 " +
-                "AND t.id = " + ticket_id + ";";
+                "WHERE " +
+                    "t.boss_id = " + boss_id + " " +
+                    "AND u.role_id = 4 " +
+                    "AND t.id = " + ticket_id + ";";
         conexion.setRs(query);
 
         ResultSet rs = conexion.getRs();

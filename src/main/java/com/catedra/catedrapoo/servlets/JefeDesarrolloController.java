@@ -49,6 +49,9 @@ public class JefeDesarrolloController extends HttpServlet {
                 case "display_all_tickets":
                     displayAllTickets(request, response, user.getId());
                     break;
+                case "display_ticket":
+                    displayTicket(request, response);
+                    break;
                 case "accept_ticket":
                     acceptTicket(request, response, user.getId());
                     break;
@@ -79,6 +82,18 @@ public class JefeDesarrolloController extends HttpServlet {
 
             // Redirigiendo a la vista correspondiente para mostrar los datos en pantalla
             request.getRequestDispatcher("/jefe_desarrollo/supervise.jsp").forward(request, response);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void displayTicket(final HttpServletRequest request, final HttpServletResponse response) throws SQLException {
+        try {
+            // Creando un atributo donde su contenido será el resultado devuelto por el modelo
+            request.setAttribute("ticket", jdm.fetchTicketById(Integer.parseInt(request.getParameter("id"))));
+
+            // Redirigiendo a la vista correspondiente para mostrar los datos en pantalla
+            request.getRequestDispatcher("/jefe_desarrollo/detail.jsp").forward(request, response);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
