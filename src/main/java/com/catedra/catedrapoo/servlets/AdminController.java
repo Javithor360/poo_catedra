@@ -63,6 +63,9 @@ public class AdminController extends HttpServlet {
                 case "new_area":
                     createArea(request, response);
                     break;
+                case "display_groups":
+                    displayGroups(request, response);
+                    break;
             }
         }
     }
@@ -197,6 +200,15 @@ public class AdminController extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void displayGroups(final HttpServletRequest request, final HttpServletResponse response) {
+        try {
+            request.setAttribute("groups", admin.getGroups());
+            request.getRequestDispatcher("/admin/groups.jsp").forward(request, response);
+        } catch (IOException | SQLException | ServletException e) {
             System.out.println(e.getMessage());
         }
     }

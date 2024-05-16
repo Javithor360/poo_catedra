@@ -2,6 +2,7 @@ package com.catedra.catedrapoo.models;
 
 import com.catedra.catedrapoo.beans.AreaBean;
 import com.catedra.catedrapoo.beans.BasicUserBean;
+import com.catedra.catedrapoo.beans.GroupBean;
 import com.catedra.catedrapoo.beans.UserBean;
 
 import java.sql.*;
@@ -303,7 +304,7 @@ public class Admin {
 
             conn.commit(); // Confirmar transacción
 
-            if(newAreaId > 0) created = true;
+            if (newAreaId > 0) created = true;
         } catch (SQLException e) {
             if (conn != null) {
                 try {
@@ -321,5 +322,47 @@ public class Admin {
             conexion.closeConnection();
         }
         return created;
+    }
+
+    public HashMap<Integer, GroupBean> getGroups() throws SQLException {
+        HashMap<Integer, GroupBean> groupList = new HashMap<>();
+        Conexion conexion = null;
+
+        try {
+            conexion = new Conexion();
+            String query = "SELECT g.id AS GrupoID, g.name AS NombreGrupo, " +
+                    "a.id AS AreaID, a.name AS NombreArea, u.id AS JefeID, " +
+                    "u.name AS NombreJefe, COUNT(ug.user_id) AS TotalIntegrantes " +
+                    "FROM `groups` g " +
+                    "LEFT JOIN assignments_map ma ON ma.users_group_id = g.id " +
+                    "LEFT JOIN areas a ON ma.area_id = a.id " +
+                    "LEFT JOIN users u ON ma.boss_id = u.id " +
+                    "LEFT JOIN users_groups ug ON g.id = ug.group_id " +
+                    "GROUP BY g.id, g.name, a.id, a.name, u.id, u.name;";
+            conexion.setRs(query);
+
+            ResultSet rs = conexion.getRs();
+            while (rs.next()) {
+                GroupBean grupo = new GroupBean(
+                        rs.getInt("GrupoID"),
+                        rs.getString("NombreGrupo"),
+                        new BasicUserBean(
+                                rs.getInt("JefeID"),
+                                rs.getString("NombreJefe")
+                        ),
+                        new AreaBean(
+                                rs.getInt("AreaID"),
+                                rs.getString("NombreArea")
+                        ),
+                        rs.getInt("TotalIntegrantes")
+                );
+                groupList.put(grupo.getId(), grupo);
+            }
+        } finally {
+            if (conexion != null) {
+                conexion.closeConnection();
+            }
+        }
+        return groupList;
     }
 }

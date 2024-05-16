@@ -15,6 +15,11 @@ public class AreaBean {
         this.dev_boss = dev_boss;
     }
 
+    public AreaBean(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }

@@ -53,7 +53,7 @@
                 <div class="card-body align-content-center">
                     <h5 class="card-title">Gestión de grupos</h5>
                     <p class="card-text">Revisa la organización de los grupos para todas las áreas</p>
-                    <a href="#" class="btn btn-primary">Accede aquí</a>
+                    <a href="/admin/groups.jsp" class="btn btn-primary">Accede aquí</a>
                 </div>
             </div>
         </div>
